@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <Button
+        android:id="@+id/b_new_test_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Iniciar prueba"
+        android:textColor="@color/blank_text"
+        android:theme="@style/LogInButton"
+        android:layout_marginBottom="20dp"
+        android:drawableLeft="@drawable/ic_play_arrow"
+        />
+
+    <Button
+        android:id="@+id/b_test_history_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/b_new_test_home"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Consultar resultados"
+        android:textColor="@color/blank_text"
+        android:theme="@style/LogInButton"
+        android:drawableLeft="@drawable/ic_format_list_bulleted"
+        />
+
+</RelativeLayout>

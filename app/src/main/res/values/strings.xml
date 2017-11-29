@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">quiz</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="test_json">{"secciones":[{"nombre":"Matemáticas","active":true,"preguntas":[{"pregunta":1,"descripcion":"¿Cuánto es 2+2?","opcion1":"5","opcion2":"9","opcion3":"4","opcion4":"1","respuesta":"4","usuario":"-"},{"pregunta":2,"descripcion":"¿Cuánto es 5-2?","opcion1":"0","opcion2":"3","opcion3":"7","opcion4":"10","respuesta":"3","usuario":"-"}]}]}</string>
+</resources>
