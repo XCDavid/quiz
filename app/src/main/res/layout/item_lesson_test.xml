@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/iv_background_trasnparent"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/accent_trasparent"
+        />
+    <TextView
+        android:id="@+id/tv_lesson_name_test"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Materia"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:visibility="visible"
+        android:textColor="@color/primary_text"
+        />
+    <ImageView
+        android:id="@+id/iv_texture_trasnparent"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:src="@drawable/transparent_rectangle"
+        android:visibility="gone"
+        />
+
+
+</RelativeLayout>

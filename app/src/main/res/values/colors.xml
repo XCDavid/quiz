@@ -9,4 +9,7 @@
     <color name="blank_text">#FFFFFF</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
+
+    <color name="gray_transparent">#7F757575</color>
+    <color name="accent_trasparent">#7FFFC107</color>
 </resources>

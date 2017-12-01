@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,6 +27,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         bNewTest = (Button) findViewById(R.id.b_new_test_home);
         bTestHistory = (Button) findViewById(R.id.b_test_history_home);
 
+        bNewTest.setOnClickListener(this);
+        bTestHistory.setOnClickListener(this);
+
         getOrCreateTests();
     }
 
@@ -40,18 +44,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intentTest);
                 break;
             case R.id.b_test_history_home:
-
+                Intent intentHistoryTest = new Intent(HomeActivity.this, HistoryTest.class);
+                startActivity(intentHistoryTest);
                 break;
         }
     }
 
     private void getOrCreateTests() {
         String testJSONString = getString(R.string.test_json);
-        try {
-            JSONObject testJson = new JSONObject(testJSONString);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
         String testCount = SharedPreferencesUtils.readFromPreferencesString(HomeActivity.this, SharedPreferencesUtils.TEST_COUNT, "0");
         testNext = Integer.valueOf(testCount);
 
