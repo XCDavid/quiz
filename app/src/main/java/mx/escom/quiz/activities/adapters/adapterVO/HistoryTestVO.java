@@ -7,17 +7,17 @@ import org.json.JSONArray;
  */
 
 public class HistoryTestVO {
-    int idLesson;
+    int idTest;
     String name;
     boolean active;
     JSONArray questions;
-    public int getIdLesson() {
-        return idLesson;
-    }
+//    public int getIdLesson() {
+//        return idLesson;
+//    }
 
-    public void setIdLesson(int idLesson) {
-        this.idLesson = idLesson;
-    }
+//    public void setIdLesson(int idLesson) {
+//        this.idLesson = idLesson;
+//    }
     public String getName() {
         return name;
     }

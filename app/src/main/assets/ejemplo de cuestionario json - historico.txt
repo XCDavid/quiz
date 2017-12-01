@@ -1,0 +1,36 @@
+{
+  "idTest":1,
+  "fechaTest":"12:12:12",
+  "correctas":10,
+  "incorrectas":10,
+  "calificacion":5,
+  "secciones": [
+    {
+      "id": 1,
+      "nombre": "Matemáticas",
+      "active": true,
+      "preguntas": [
+        {
+          "pregunta": 1,
+          "descripcion": "¿Cuánto es 2+2?",
+          "opcion1": "5",
+          "opcion2": "9",
+          "opcion3": "4",
+          "opcion4": "1",
+          "respuesta": "4",
+          "usuario": "-"
+        },
+        {
+          "pregunta": 2,
+          "descripcion": "¿Cuánto es 5-2?",
+          "opcion1": "0",
+          "opcion2": "3",
+          "opcion3": "7",
+          "opcion4": "10",
+          "respuesta": "3",
+          "usuario": "opcion1"
+        }
+      ]
+    }
+  ]
+}
