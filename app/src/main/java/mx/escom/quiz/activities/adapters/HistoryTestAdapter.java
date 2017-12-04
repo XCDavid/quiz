@@ -12,13 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mx.escom.quiz.R;
-import mx.escom.quiz.activities.adapters.adapterVO.LessonVO;
+import mx.escom.quiz.activities.adapters.adapterVO.HistoryTestVO;
 
-public class HistoryTestAdapter extends ArrayAdapter<LessonVO> {
-    private List<LessonVO> items = new ArrayList<>();
+public class HistoryTestAdapter extends ArrayAdapter<HistoryTestVO> {
+    private List<HistoryTestVO> items = new ArrayList<>();
     private Context contexto;
 
-    public HistoryTestAdapter(Context context, int textViewResourceId, List<LessonVO> data) {
+    public HistoryTestAdapter(Context context, int textViewResourceId, List<HistoryTestVO> data) {
         super(context,textViewResourceId,data);
         this.contexto = context;
         this.items = data;
@@ -26,23 +26,31 @@ public class HistoryTestAdapter extends ArrayAdapter<LessonVO> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View itemMenuView = convertView;
-        if (itemMenuView == null) {
+        View itemHistoryTestView = convertView;
+        if (itemHistoryTestView == null) {
             LayoutInflater inflater = (LayoutInflater) contexto.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            itemMenuView = inflater.inflate(R.layout.item_lesson_test, null);
+            itemHistoryTestView = inflater.inflate(R.layout.item_history_test, null);
         }
-        LessonVO currentItem = items.get(position);
+        HistoryTestVO currentItem = items.get(position);
         if (currentItem != null) {
-            TextView tvItemEnrolmentDn = (TextView) itemMenuView.findViewById(R.id.tv_lesson_name_test);
-            ImageView ivTextureTransparent = (ImageView) itemMenuView.findViewById(R.id.iv_texture_trasnparent);
-            if(tvItemEnrolmentDn != null){
-                tvItemEnrolmentDn.setText(currentItem.getName());
+            TextView tvDateTest = (TextView) itemHistoryTestView.findViewById(R.id.tv_date_history_test);
+            TextView tvResult = (TextView) itemHistoryTestView.findViewById(R.id.tv_result_history_test);
+            TextView tvCorrects = (TextView) itemHistoryTestView.findViewById(R.id.tv_correct_history_test);
+            TextView tvIncorrects = (TextView) itemHistoryTestView.findViewById(R.id.tv_incorrect_history_test);
+            if(tvDateTest != null){
+                tvDateTest.setText(currentItem.getDate());
             }
-            if (!currentItem.isActive()){
-                itemMenuView.setVisibility(View.GONE);
+            if(tvResult != null){
+                tvResult.setText(currentItem.getResult()+"");
+            }
+            if(tvCorrects != null){
+                tvCorrects.setText(currentItem.getCorrect()+"");
+            }
+            if(tvIncorrects != null){
+                tvIncorrects.setText(currentItem.getIncorrect()+"");
             }
         }
-        return itemMenuView;
+        return itemHistoryTestView;
     }
 
 //    @Override

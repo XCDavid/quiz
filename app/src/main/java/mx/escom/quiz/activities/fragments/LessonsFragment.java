@@ -24,13 +24,31 @@ import mx.escom.quiz.utils.SharedPreferencesUtils;
 public class LessonsFragment extends Fragment {
     ListView lvLessons;
     LessonsAdapter lessonsAdapter;
+    boolean isHistory = false;
+
+    List<LessonVO> lessonVOList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_lessons, container, false);
         lvLessons = (ListView) layout.findViewById(R.id.lv_lessons);
+        lessonVOList = new ArrayList<>();
+        //Get bundle for historyFlag
+        Bundle args = getArguments();
+        if (args != null) {
+            isHistory = args.getBoolean("isHistory");
+            int count = 0;
+            if (isHistory){
+                count = args.getInt("idHistoryTest");
+            }else{
+                String countNewTest = SharedPreferencesUtils.readFromPreferencesString(getActivity(),SharedPreferencesUtils.TEST_COUNT,"0");
+                count = Integer.valueOf(countNewTest);
+            }
 
-        lessonsAdapter = new LessonsAdapter(getActivity(), R.layout.item_lesson_test, getData(getActivity()));
+            lessonVOList = getData(getActivity(),count);
+        }
+
+        lessonsAdapter = new LessonsAdapter(getActivity(), R.layout.item_lesson_test,lessonVOList);
         lvLessons.setAdapter(lessonsAdapter);
         lvLessons.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -40,8 +58,8 @@ public class LessonsFragment extends Fragment {
                     QuestionsFragment questionsFragment = new QuestionsFragment();
                     Bundle args = new Bundle();
                     args.putInt("idLesson", lessonVO.getIdLesson());
-                    args.putBoolean("isHistory", false);
-                    questionsFragment .setArguments(args);
+                    args.putBoolean("isHistory", isHistory);
+                    questionsFragment.setArguments(args);
                     ((TestActivity)getActivity()).replaceFragmentHomeContent(questionsFragment, "questions");
                 }
             }
@@ -49,10 +67,8 @@ public class LessonsFragment extends Fragment {
         return layout;
     }
 
-    private List<LessonVO> getData(FragmentActivity activity) {
+    private List<LessonVO> getData(FragmentActivity activity, int count) {
         List<LessonVO> lessonVOLst = new ArrayList<>();
-        String countLesson = SharedPreferencesUtils.readFromPreferencesString(activity,SharedPreferencesUtils.TEST_COUNT,"0");
-        int count = Integer.valueOf(countLesson);
         if(count != 0){
             String testJsonString = SharedPreferencesUtils.readFromPreferencesString(activity,SharedPreferencesUtils.TEST_AUX_NAME+count,"{}");
             try {

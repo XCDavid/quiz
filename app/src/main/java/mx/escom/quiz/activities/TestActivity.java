@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 import mx.escom.quiz.R;
 import mx.escom.quiz.activities.fragments.LessonsFragment;
 import mx.escom.quiz.utils.SharedPreferencesUtils;
@@ -20,6 +22,8 @@ public class TestActivity extends AppCompatActivity {
     Toolbar toolbar;
     String testJSONString = "";
     JSONObject testJSON;
+
+    boolean historyFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +36,27 @@ public class TestActivity extends AppCompatActivity {
 //            getSupportActionBar().setTitle(getResources().getString(R.string.enrolamiento_activity_title));
 //            invalidateOptionsMenu();
 //        }
-        Bundle bundle = getIntent().getExtras();
-        int nextTestCount = bundle.getInt("next_test_count");
-
-        createNewTest(nextTestCount + 1);
-
         LessonsFragment lessonsFragment = new LessonsFragment();
         String tagFragmentLessons = "lessons";
+
+        Bundle bundle = getIntent().getExtras();
+        historyFlag = bundle.getBoolean("historyFlag");
+        if (historyFlag) {
+            int idHistoryTest = bundle.getInt("idHistoryTest");
+
+            Bundle args = new Bundle();
+            args.putInt("idHistoryTest", idHistoryTest);
+            args.putBoolean("isHistory", true);
+            lessonsFragment.setArguments(args);
+        } else {
+            int testCount = bundle.getInt("next_test_count");
+            createNewTest(testCount + 1);
+
+            Bundle args = new Bundle();
+            args.putBoolean("isHistory", false);
+            lessonsFragment.setArguments(args);
+        }
+
         replaceFragmentHomeContent(lessonsFragment, tagFragmentLessons);
     }
 
@@ -46,7 +64,24 @@ public class TestActivity extends AppCompatActivity {
         testJSONString = getString(R.string.test_json);
         try {
             testJSON = new JSONObject(testJSONString);
-//            JSONArray arrayMaterias = testJson.optJSONArray("secciones");
+            JSONArray arrayMaterias = testJSON.optJSONArray("secciones");
+            int totalQ = 0;
+            if (arrayMaterias != null) {
+
+                for (int i = 0; i < arrayMaterias.length(); i++) {
+                    JSONObject materiaJSON = arrayMaterias.getJSONObject(i);
+                    JSONArray questions = materiaJSON.optJSONArray("preguntas");
+                    if (questions != null)
+                        totalQ += questions.length();
+                }
+            }
+
+            testJSON.put("fechaTest", new Date().toString());
+            testJSON.put("correctas", 0);
+            testJSON.put("incorrectas", totalQ);
+            testJSON.put("calificacion", 0);
+            testJSON.put("idTest", nextCount);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -72,18 +107,18 @@ public class TestActivity extends AppCompatActivity {
         if (isPrincipalFragmentVisible()) {
             finish();
         } else {
-                super.onBackPressed();
+            super.onBackPressed();
 //            navigationDrawerFragment.goToPrincipalFragment();
         }
     }
 
-    public boolean isPrincipalFragmentVisible(){
+    public boolean isPrincipalFragmentVisible() {
 //        String fragmentTagAux = getString(R.string.menu_home_drawer1);
         String fragmentTagAux = "lessons";
-        LessonsFragment lessonsFragment = (LessonsFragment)getSupportFragmentManager().findFragmentByTag(fragmentTagAux);
+        LessonsFragment lessonsFragment = (LessonsFragment) getSupportFragmentManager().findFragmentByTag(fragmentTagAux);
         if (lessonsFragment != null && lessonsFragment.isVisible()) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

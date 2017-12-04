@@ -17,8 +17,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     Button bNewTest;
     Button bTestHistory;
 
-    int testNext = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,16 +27,17 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
 
         bNewTest.setOnClickListener(this);
         bTestHistory.setOnClickListener(this);
-
-        getOrCreateTests();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.b_new_test_home:
+                int testNext = getOrCreateTests();
+
                 Bundle bundle = new Bundle();
                 bundle.putInt("next_test_count", testNext);
+                bundle.putBoolean("historyFlag", false);
                 Intent intentTest = new Intent(HomeActivity.this, TestActivity.class);
                 intentTest.putExtras(bundle);
                 startActivity(intentTest);
@@ -50,10 +49,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void getOrCreateTests() {
+    private int getOrCreateTests() {
         String testJSONString = getString(R.string.test_json);
         String testCount = SharedPreferencesUtils.readFromPreferencesString(HomeActivity.this, SharedPreferencesUtils.TEST_COUNT, "0");
-        testNext = Integer.valueOf(testCount);
+        return Integer.valueOf(testCount);
 
     }
 }

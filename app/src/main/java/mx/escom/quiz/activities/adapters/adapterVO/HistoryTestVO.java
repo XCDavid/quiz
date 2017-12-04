@@ -2,44 +2,66 @@ package mx.escom.quiz.activities.adapters.adapterVO;
 
 import org.json.JSONArray;
 
+import java.util.List;
+
 /**
  * Created by Desarrollo on 31/10/2017.
  */
 
 public class HistoryTestVO {
     int idTest;
-    String name;
-    boolean active;
-    JSONArray questions;
-//    public int getIdLesson() {
-//        return idLesson;
-//    }
+    String date;
+    int correct;
+    int incorrect;
+    double result;
+    List<LessonVO> lessonVOList;
 
-//    public void setIdLesson(int idLesson) {
-//        this.idLesson = idLesson;
-//    }
-    public String getName() {
-        return name;
+    public int getIdTest() {
+        return idTest;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setIdTest(int idTest) {
+        this.idTest = idTest;
     }
 
-    public boolean isActive() {
-        return active;
+    public String getDate() {
+        return date;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public JSONArray getQuestions() {
-        return questions;
+    public int getCorrect() {
+        return correct;
     }
 
-    public void setQuestions(JSONArray questions) {
-        this.questions = questions;
+    public void setCorrect(int correct) {
+        this.correct = correct;
+    }
+
+    public int getIncorrect() {
+        return incorrect;
+    }
+
+    public void setIncorrect(int incorrect) {
+        this.incorrect = incorrect;
+    }
+
+    public double getResult() {
+        return result;
+    }
+
+    public void setResult(double result) {
+        this.result = result;
+    }
+
+    public List<LessonVO> getLessonVOList() {
+        return lessonVOList;
+    }
+
+    public void setLessonVOList(List<LessonVO> lessonVOList) {
+        this.lessonVOList = lessonVOList;
     }
 
 }

@@ -17,7 +17,7 @@
           "opcion2": "9",
           "opcion3": "4",
           "opcion4": "1",
-          "respuesta": "4",
+          "respuesta": "opcion3",
           "usuario": "-"
         },
         {
@@ -27,7 +27,7 @@
           "opcion2": "3",
           "opcion3": "7",
           "opcion4": "10",
-          "respuesta": "3",
+          "respuesta": "opcion2",
           "usuario": "opcion1"
         }
       ]
