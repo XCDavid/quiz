@@ -26,6 +26,7 @@ import mx.escom.quiz.utils.SharedPreferencesUtils;
 public class QuestionsFragment extends Fragment {
     LinearLayout linearLayout;
     private boolean isHistory = false;
+    int idLesson = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,14 +42,14 @@ public class QuestionsFragment extends Fragment {
         linearLayout.removeAllViews();
         Bundle args = getArguments();
         if (args != null) {
-            int idLesson = args.getInt("idLesson");
+            idLesson = args.getInt("idLesson");
             isHistory = args.getBoolean("isHistory");
 
-            getData(getActivity(), idLesson);
+            getData(getActivity());
         }
     }
 
-    private List<LessonVO> getData(final FragmentActivity activity, final int idLesson) {
+    private List<LessonVO> getData(final FragmentActivity activity) {
         List<LessonVO> lessonVOLst = new ArrayList<>();
         String countLesson = SharedPreferencesUtils.readFromPreferencesString(activity, SharedPreferencesUtils.TEST_COUNT, "0");
         final int count = Integer.valueOf(countLesson);
@@ -156,13 +157,13 @@ public class QuestionsFragment extends Fragment {
                                                                             questionJSONInner.put("usuario", respUser);
                                                                             //Actualizar json al contestar y despues del calculo de las respuestas correctas e incorrectas
                                                                             SharedPreferencesUtils.saveToPreferencesString(getActivity(), SharedPreferencesUtils.TEST_AUX_NAME + count, testJSONInner.toString());
-                                                                            if(!oldRespUser.equals(respUser)){
-                                                                                if (respUser.equals(respOk)) {
-                                                                                    evaluateAndCalculate(true, count);
-                                                                                } else {
-                                                                                    evaluateAndCalculate(false, count);
-                                                                                }
-                                                                            }
+//                                                                            if (!oldRespUser.equals(respUser)) {
+//                                                                                if (respUser.equals(respOk)) {
+                                                                                    evaluateAndCalculate(count);
+//                                                                                } else {
+//                                                                                    evaluateAndCalculate(false, count, idLesson, idQRg);
+//                                                                                }
+//                                                                            }
 
                                                                         }
                                                                     }
@@ -226,67 +227,103 @@ public class QuestionsFragment extends Fragment {
         return lessonVOLst;
     }
 
-    private void evaluateAndCalculate(boolean questionResult, int count) {
+    private void evaluateAndCalculate(int count) {
 
         String testJsonStringInner = SharedPreferencesUtils.readFromPreferencesString(getActivity(), SharedPreferencesUtils.TEST_AUX_NAME + count, "{}");
         try {
             JSONObject testJSONInner = new JSONObject(testJsonStringInner);
+            JSONArray lessonJSONArray = testJSONInner.optJSONArray("secciones");
 
-            int corrects = testJSONInner.optInt("correctas");
-            int incorrects = testJSONInner.optInt("incorrectas");
+            int totalQuestionTest = 0;
+            int totalCorrectQuestion = 0;
+            int totalIncorrectQuestion = 0;
 
-            int totalQ = corrects + incorrects;
-            if (questionResult) {
-                //Respuesta correcta ajustar los valores de las respuestas
+            for (int i = 0; i < lessonJSONArray.length(); i++) {
+                JSONObject lessonObj = lessonJSONArray.getJSONObject(i);
+                int idLesson = lessonObj.optInt("id");
+                String name = lessonObj.optString("nombre");
+                boolean active = lessonObj.optBoolean("active");
+                if (active) {
+                    JSONArray questions = lessonObj.optJSONArray("preguntas");
+                    totalQuestionTest += questions.length();
+                    for (int ii = 0; ii < questions.length(); ii++) {
+                        JSONObject quiestionJSON = questions.getJSONObject(ii);
+                        String respOk = quiestionJSON.optString("respuesta");
+                        String oldRespUser = quiestionJSON.optString("usuario");
 
-                if (corrects == totalQ) {
-                    //no sumar mas respuestas correctas
-                } else {
-                    corrects += 1;
+                        if (oldRespUser.equals(respOk)) {
+                            totalCorrectQuestion += 1;
+                        }
+
+                    }
                 }
-                if (incorrects == 0) {
-                    //no restar mas respuestas in-correctas
-                } else {
-                    incorrects -= 1;
-                }
-
-                int auxTotal = incorrects + corrects;
-
-                if (totalQ != auxTotal) {
-                    //Algo se hizo mal, lanzar aviso
-                    Toast.makeText(getActivity(), "cálculo de respuesta correcta erroneo: incorrectas->" + incorrects + ", correctas->" + corrects + " total->" + auxTotal, Toast.LENGTH_SHORT).show();
-                }
-
-                testJSONInner.put("correctas", corrects);
-                testJSONInner.put("incorrectas", incorrects);
-            } else {
-                //Respuesta in-correcta ajustar los valores de las respuestas
-
-                if (corrects == 0) {
-                    //no restar mas respuestas correctas
-                } else {
-                    corrects -= 1;
-                }
-                if (incorrects == totalQ) {
-                    //no sumar mas respuestas in-correctas
-                } else {
-                    incorrects += 1;
-                }
-                int auxTotal = incorrects + corrects;
-                if (totalQ != auxTotal) {
-                    //Algo se hizo mal, lanzar aviso
-                    Toast.makeText(getActivity(), "cálculo de respuesta incorrecta erroneo: incorrectas->" + incorrects + ", correctas->" + corrects + " total->" + auxTotal, Toast.LENGTH_SHORT).show();
-                }
-
-                testJSONInner.put("correctas", corrects);
-                testJSONInner.put("incorrectas", incorrects);
             }
+
+            totalIncorrectQuestion = totalQuestionTest - totalCorrectQuestion;
+            testJSONInner.put("correctas", totalCorrectQuestion);
+            testJSONInner.put("incorrectas", totalIncorrectQuestion);
             //promedio
-            double result = (double) corrects / (double) totalQ;
+            double result = (double) totalCorrectQuestion / (double) totalQuestionTest;
             result = result * 10;
             testJSONInner.put("calificacion", result);
 
             SharedPreferencesUtils.saveToPreferencesString(getActivity(), SharedPreferencesUtils.TEST_AUX_NAME + count, testJSONInner.toString());
+
+//            int corrects = testJSONInner.optInt("correctas");
+//            int incorrects = testJSONInner.optInt("incorrectas");
+//
+//            int totalQ = corrects + incorrects;
+//            if (questionResult) {
+//                //Respuesta correcta ajustar los valores de las respuestas
+//
+//                if (corrects == totalQ) {
+//                    //no sumar mas respuestas correctas
+//                } else {
+//                    corrects += 1;
+//                }
+//                if (incorrects == 0) {
+//                    //no restar mas respuestas in-correctas
+//                } else {
+//                    incorrects -= 1;
+//                }
+//
+//                int auxTotal = incorrects + corrects;
+//
+//                if (totalQ != auxTotal) {
+//                    //Algo se hizo mal, lanzar aviso
+//                    Toast.makeText(getActivity(), "cálculo de respuesta correcta erroneo: incorrectas->" + incorrects + ", correctas->" + corrects + " total->" + auxTotal, Toast.LENGTH_SHORT).show();
+//                }
+//
+//                testJSONInner.put("correctas", corrects);
+//                testJSONInner.put("incorrectas", incorrects);
+//            } else {
+//                //Respuesta in-correcta ajustar los valores de las respuestas
+//
+//                if (corrects == 0) {
+//                    //no restar mas respuestas correctas
+//                } else {
+//                    corrects -= 1;
+//                }
+//                if (incorrects == totalQ) {
+//                    //no sumar mas respuestas in-correctas
+//                } else {
+//                    incorrects += 1;
+//                }
+//                int auxTotal = incorrects + corrects;
+//                if (totalQ != auxTotal) {
+//                    //Algo se hizo mal, lanzar aviso
+//                    Toast.makeText(getActivity(), "cálculo de respuesta incorrecta erroneo: incorrectas->" + incorrects + ", correctas->" + corrects + " total->" + auxTotal, Toast.LENGTH_SHORT).show();
+//                }
+//
+//                testJSONInner.put("correctas", corrects);
+//                testJSONInner.put("incorrectas", incorrects);
+//            }
+//            //promedio
+//            double result = (double) corrects / (double) totalQ;
+//            result = result * 10;
+//            testJSONInner.put("calificacion", result);
+//
+//            SharedPreferencesUtils.saveToPreferencesString(getActivity(), SharedPreferencesUtils.TEST_AUX_NAME + count, testJSONInner.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }

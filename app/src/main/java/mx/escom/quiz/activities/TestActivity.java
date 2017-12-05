@@ -1,11 +1,18 @@
 package mx.escom.quiz.activities;
 
+import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.format.Time;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,6 +31,7 @@ public class TestActivity extends AppCompatActivity {
     JSONObject testJSON;
 
     boolean historyFlag = false;
+    private TextView timerText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +40,19 @@ public class TestActivity extends AppCompatActivity {
         setContentView(R.layout.activity_test);
         toolbar = (Toolbar) findViewById(R.id.test_app_bar);
         setSupportActionBar(toolbar);
-//        if (getSupportActionBar() != null) {
-//            getSupportActionBar().setTitle(getResources().getString(R.string.enrolamiento_activity_title));
-//            invalidateOptionsMenu();
-//        }
-        LessonsFragment lessonsFragment = new LessonsFragment();
-        String tagFragmentLessons = "lessons";
 
         Bundle bundle = getIntent().getExtras();
         historyFlag = bundle.getBoolean("historyFlag");
+        if (getSupportActionBar() != null) {
+            if (!historyFlag) {
+                getSupportActionBar().setTitle(getResources().getString(R.string.timer_left));
+                invalidateOptionsMenu();
+            }
+        }
+        LessonsFragment lessonsFragment = new LessonsFragment();
+        String tagFragmentLessons = "lessons";
+
+
         if (historyFlag) {
             int idHistoryTest = bundle.getInt("idHistoryTest");
 
@@ -121,5 +133,74 @@ public class TestActivity extends AppCompatActivity {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (!historyFlag) {
+
+            getMenuInflater().inflate(R.menu.timer_menu, menu);
+
+            MenuItem timerItem = menu.findItem(R.id.break_timer);
+            timerText = (TextView) MenuItemCompat.getActionView(timerItem);
+
+            timerText.setPadding(10, 0, 10, 0); //Or something like that...
+
+            startTimer(30000, 1000); //One tick every second for 30 seconds
+        }
+
+        return true;
+    }
+
+    private void startTimer(long duration, long interval) {
+
+        CountDownTimer timer = new CountDownTimer(duration, interval) {
+
+            @Override
+            public void onFinish() {
+                //TODO Whatever's meant to happen when it finishes
+                Toast.makeText(TestActivity.this, "Tiempo agotado consulta tus resultados en la seccion \"Consultar resultados\"", Toast.LENGTH_LONG).show();
+                finish();
+            }
+
+            @Override
+            public void onTick(long millisecondsLeft) {
+                int secondsLeft = (int) Math.round((millisecondsLeft / (double) 1000));
+                timerText.setText(secondsToString(secondsLeft));
+            }
+        };
+
+        timer.start();
+    }
+
+    private String secondsToString(int improperSeconds) {
+
+        //Seconds must be fewer than are in a day
+
+        Time secConverter = new Time();
+
+        secConverter.hour = 0;
+        secConverter.minute = 0;
+        secConverter.second = 0;
+
+        secConverter.second = improperSeconds;
+        secConverter.normalize(true);
+
+        String hours = String.valueOf(secConverter.hour);
+        String minutes = String.valueOf(secConverter.minute);
+        String seconds = String.valueOf(secConverter.second);
+
+        if (seconds.length() < 2) {
+            seconds = "0" + seconds;
+        }
+        if (minutes.length() < 2) {
+            minutes = "0" + minutes;
+        }
+        if (hours.length() < 2) {
+            hours = "0" + hours;
+        }
+
+        String timeString = hours + ":" + minutes + ":" + seconds;
+        return timeString;
     }
 }
