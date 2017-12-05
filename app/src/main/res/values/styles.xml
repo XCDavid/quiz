@@ -17,5 +17,6 @@
     <style name="myToolBar" parent="Theme.AppCompat.NoActionBar">
         <item name="android:actionMenuTextColor">@android:color/white</item>
         <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

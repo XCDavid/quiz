@@ -6,6 +6,7 @@
     <item android:id="@+id/break_timer"
         android:title="00:00:00"
         compatibility:showAsAction="always"
-        compatibility:actionViewClass="android.widget.TextView" />
+        compatibility:actionViewClass="android.widget.TextView"
+        />
 
 </menu>
